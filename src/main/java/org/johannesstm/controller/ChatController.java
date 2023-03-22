@@ -30,7 +30,7 @@ public class ChatController {
     private final UserRepository userRepository;
 
     private final ChatService chatService;
-
+//init
     @Inject
     JsonWebToken jwt;
 
@@ -70,7 +70,7 @@ public class ChatController {
     @Path("/updateUser/{chatId}/{userId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateUsers(@PathParam("chatId") Long chatId, @PathParam("userId") Long userId) throws NotFoundException, Exception {
+    public Response updateUsers(@PathParam("chatId") Long chatId, @PathParam("userId") Long userId) throws Exception {
 
         final String response = chatService.updateUser(chatId, userId);
 
@@ -83,7 +83,7 @@ public class ChatController {
     @Path("/createMessage/{chatId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createMessage(@PathParam("chatId") Long chatId, StringRequest emailRequest) throws NotFoundException, Exception {
+    public Response createMessage(@PathParam("chatId") Long chatId, StringRequest emailRequest) throws Exception {
 
         final Message response = chatService.createMessage(chatId, emailRequest.getContent());
 
