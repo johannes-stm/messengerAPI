@@ -3,14 +3,10 @@ package org.johannesstm.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.smallrye.common.constraint.NotNull;
-import org.jboss.resteasy.reactive.PartType;
-import org.jboss.resteasy.reactive.RestForm;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.ws.rs.core.MediaType;
-import java.io.File;
-import java.io.InputStream;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,16 +37,21 @@ public class User extends PanacheEntityBase {
     @JsonIgnore
     protected String password;
 
-    @RestForm
-    @PartType(MediaType.APPLICATION_OCTET_STREAM)
-    String file;
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @JsonIgnore
+    protected byte[] profilePicture;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<String> roles = new HashSet<>();
 
-    @ManyToMany(mappedBy = "chatUsers")
-    Set<Chat> chats = new HashSet<>();
+    @ManyToMany(mappedBy = "chatUsers", cascade = CascadeType.ALL)
+    Set<Chat> users = new HashSet<>();
+
+    @ManyToMany(mappedBy = "chatAdmins", cascade = CascadeType.ALL)
+    Set<Chat> admins = new HashSet<>();
+
 
     public Long getId() {
         return id;
@@ -76,12 +77,27 @@ public class User extends PanacheEntityBase {
         this.password = password;
     }
 
-    public String getFile() {
-        return file;
+    /*public String getProfilePicture() throws IOException {
+        if (profilePicture == null) {
+            return null;
+        }
+
+        String encryptionKey = "Spaßvogeltruppe";
+
+        return HashLong.encryptLong(id, encryptionKey);
+    }*/
+
+    @JsonIgnore
+    public byte[] getProfilePicture1() throws IOException {
+        if (profilePicture == null) {
+            return null;
+        }
+
+        return profilePicture;
     }
 
-    public void setFile(String file) {
-        this.file = file;
+    public void setProfilePicture(byte[] profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public Set<String> getRoles() {

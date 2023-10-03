@@ -33,11 +33,18 @@ public class Chat extends PanacheEntityBase {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     Set<User> chatUsers = new HashSet<>();
 
+    @ManyToMany @Fetch(FetchMode.JOIN)
+    @JoinTable(
+            name = "chat_admin",
+            joinColumns = @JoinColumn(name = "chat_id"),
+            inverseJoinColumns = @JoinColumn(name = "admin_id"))
+    Set<User> chatAdmins = new HashSet<>();
+
     @JsonManagedReference
     @OneToMany(
-            mappedBy = "chat",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+            mappedBy = "chat"//,
+            //cascade = CascadeType.ALL//,
+            //orphanRemoval = true
     )  @Fetch(FetchMode.JOIN)
     private List<Message> messages = new ArrayList<>();
 
@@ -47,6 +54,18 @@ public class Chat extends PanacheEntityBase {
     public void addMessage(Message message) {
         messages.add(message);
         message.setChat(this);
+    }
+
+    public List<Message> getMessages() {
+        int startIndex = Math.max(messages.size() - 25, 0);
+        return messages.subList(startIndex, messages.size());
+    }
+
+    public List<Message> getMessagesByPage(int page) {
+        int pageSize = 25;
+        int startIndex = Math.max(messages.size() - (page + 1) * pageSize, 0);
+        int endIndex = Math.max(messages.size() - page * pageSize, 0);
+        return messages.subList(startIndex, endIndex);
     }
 
     public Long getChatId() {
@@ -65,6 +84,14 @@ public class Chat extends PanacheEntityBase {
         return chatUsers;
     }
 
+    public Set<User> getChatAdmins() {
+        return chatAdmins;
+    }
+
+    public void setChatAdmins(Set<User> chatAdmins) {
+        this.chatAdmins = chatAdmins;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -75,10 +102,6 @@ public class Chat extends PanacheEntityBase {
 
     public void setChatUsers(Set<User> chatUsers) {
         this.chatUsers = chatUsers;
-    }
-
-    public List<Message> getMessages() {
-        return messages;
     }
 
     public void setMessages(List<Message> messages) {

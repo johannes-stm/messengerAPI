@@ -36,18 +36,7 @@ public class FriendService {
         List<Friend> friendResults = friendRepository.findByUser(user.getId());
         List<FriendRequest> friendRequestResults = friendRequestRepository.findByUser(user.getId());
 
-
         HashSet<User> set = new HashSet<>();
-
-        //userResults.removeAll();
-
-        /*List<User> listOutput = userResults.stream()
-                .filter(p -> friendResults.stream().map(Friend::getFirstUser).anyMatch(id -> Objects.equals(id.getId(), p.getId())))
-                .collect(Collectors.toList());*/
-
-        //List<User> listOutput = userResults.stream().filter(user1 -> friendResults.stream().anyMatch(friend -> !Objects.equals(user1.getId(), friend.getFirstUser().getId()) || !Objects.equals(user1.getId(), friend.getSecondUser().getId()))).limit(10).toList();
-
-
 
         for (Friend current : friendResults) {
             set.add(current.getFirstUser());

@@ -117,8 +117,6 @@ public class FriendController {
                 friendRequestRepository.delete(friendRequest.get());
                 friendRepository.persist(friend);
 
-                System.out.println(friend);
-
                 return Response.ok(friend).build();
             } else {
                 friendRequestRepository.delete(friendRequest.get());

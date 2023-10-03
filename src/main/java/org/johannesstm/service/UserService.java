@@ -40,7 +40,15 @@ public class UserService {
     }
 
     @Transactional
-    public String register(final AuthenticationRequest authRequest) {
+    public String register(final AuthenticationRequest authRequest) throws Exception {
+
+        if (authRequest.getEmail().length() == 0) {
+            throw new Exception("You need to enter a email to create a user");
+        } else if (authRequest.getPassword().length() == 0) {
+
+            throw new Exception("You cannot create User with the password length of 0");
+        }
+
         final boolean user = userRepository.findByEmail(authRequest.getEmail())
                 .isPresent();
         if (user) {
